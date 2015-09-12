@@ -43,13 +43,13 @@ public class CompleteTransaction extends HttpServlet {
         
         try {
             
+            
             String returnUrl = request.getParameter("returnUrl");
             String successString = "&success=true";
             String accountIdentifier = "&accountIdentifier=new-account-identifier";
             String message = "&message=Account Creation successful";
             
-            
-            
+            //signing the returnUrl with added parameters such ass success, accountIdentifier, and message to complete transaction
             OAuthConsumer consumer = new DefaultOAuthConsumer("test6-40942", "oQ4q4oBiv9y4jPr7");
             consumer.setSigningStrategy( new QueryStringSigningStrategy());
             String url = returnUrl + message + successString + accountIdentifier;

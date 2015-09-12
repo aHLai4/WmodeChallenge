@@ -63,12 +63,14 @@ public class Buy extends HttpServlet {
             
             String eventUrl = request.getParameter("eventUrl");
             
+            //signing the eventurl that was passed so we get authorization to use it.
             OAuthConsumer consumer = new DefaultOAuthConsumer("test6-40942", "oQ4q4oBiv9y4jPr7");
             URL url = new URL(eventUrl);
             HttpURLConnection requestUrl = (HttpURLConnection) url.openConnection();
             consumer.sign(requestUrl);
             requestUrl.connect();
             
+            //parsing the xml into a string
             String result = null;
             StringBuilder sb = new StringBuilder();
             InputStream is = new BufferedInputStream(requestUrl.getInputStream());
@@ -81,6 +83,7 @@ public class Buy extends HttpServlet {
             
             result = sb.toString();
             
+            //parsing certain elements of xml to display the current user information of buying a specific product and getting the returnUrl to finish the transaction
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             InputSource src = new InputSource();
             src.setCharacterStream(new StringReader(result));

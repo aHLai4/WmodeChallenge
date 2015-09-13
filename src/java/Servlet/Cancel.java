@@ -5,11 +5,13 @@
  */
 package Servlet;
 
+import com.sun.jersey.api.client.Client;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
@@ -21,6 +23,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Response;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -35,6 +38,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import response.GetResponse;
 
 /**
  *
@@ -58,6 +62,9 @@ public class Cancel extends HttpServlet {
         try {
             
             String eventUrl = request.getParameter("eventUrl");
+            System.out.print(eventUrl);
+            
+            String valid = "valid";
             
             OAuthConsumer consumer = new DefaultOAuthConsumer("test6-40942", "oQ4q4oBiv9y4jPr7");
             URL url = new URL(eventUrl);
@@ -65,12 +72,15 @@ public class Cancel extends HttpServlet {
             consumer.sign(requestUrl);
             requestUrl.connect();
             
+            GetResponse gr = new GetResponse();
+            gr.validateUrl(valid);
+            
             String result = null;
             StringBuilder sb = new StringBuilder();
-            InputStream is = new BufferedInputStream(requestUrl.getInputStream());
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            requestUrl.setRequestMethod("GET");
+            BufferedReader br = new BufferedReader(new InputStreamReader(requestUrl.getInputStream()));
             String inputLine = "";
-            while ((inputLine = br.readLine()) != null) 
+            while ((inputLine = br.readLine()) != null)
             {
                 sb.append(inputLine);
             }
@@ -88,6 +98,7 @@ public class Cancel extends HttpServlet {
             String companyName = doc.getElementsByTagName("name").item(0).getTextContent();
             String edition = doc.getElementsByTagName("editionCode").item(0).getTextContent();
             String returnUrl = doc.getElementsByTagName("returnUrl").item(0).getTextContent();
+            
             
             System.out.print(creatorName);
             System.out.print(companyName);
@@ -112,11 +123,8 @@ public class Cancel extends HttpServlet {
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(Cancel.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        
-        
     }
-
+    
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
